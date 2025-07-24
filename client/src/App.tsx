@@ -11,22 +11,43 @@ import {
 } from "./api/todos";
 import TodoForm from "./TodoForm";
 import TodoItem from "./TodoItem";
+import Pagination from "./Pagination";
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 1,
+  });
+
+  const loadState = async (page: number, limit: number) => {
+    try {
+      const response = await fetchTodos(page, limit);
+      setTodos(response.data);
+      setPagination({
+        page: response.page,
+        limit: response.limit,
+        total: response.total,
+        totalPages: response.totalPages,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    const loadState = async () => {
-      try {
-        const response = await fetchTodos();
-        setTodos(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+    loadState(pagination.page, pagination.limit);
+  }, [pagination.page, pagination.limit]);
 
-    loadState();
-  }, []);
+  const handlePageChange = (newPage: number) => {
+    setPagination((prev) => ({ ...prev, page: newPage }));
+  };
+
+  const handleLimitChange = (newLimit: number) => {
+    setPagination((prev) => ({ ...prev, limit: newLimit, page: 1 }));
+  };
 
   const handleNewTodo = async (text: string) => {
     const newTodo = await createTodo(text);
@@ -47,6 +68,7 @@ function App() {
     try {
       setTodos((prev) => prev.filter((todo) => todo.id != id));
       await deleteTodo(id);
+      await loadState(pagination.page, pagination.limit);
     } catch (error) {
       console.error(error);
       setTodos(todos);
@@ -91,6 +113,15 @@ function App() {
           <p>Add what a todo!</p>
         )}
       </div>
+
+      <Pagination
+        currentPage={pagination.page}
+        totalPages={pagination.totalPages}
+        onPageChange={handlePageChange}
+        limit={pagination.limit}
+        onLimitChange={handleLimitChange}
+      />
+
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>

@@ -2,14 +2,14 @@ import axios from "axios";
 
 const API_URL = "http://localhost:3001";
 
-interface Todo {
+export interface Todo {
   id: number;
   text: string;
   completed: boolean;
   createdAt: string;
 }
 
-interface PaginatedTodos {
+export interface PaginatedTodos {
   data: Todo[];
   total: number;
   page: number;
@@ -32,8 +32,13 @@ export const createTodo = async (text: string): Promise<Todo> => {
   return response.data;
 };
 
-export const updateTodo = async (id: number): Promise<Todo> => {
-  const response = await axios.patch(`${API_URL}/todos/${id}`);
+export const updateTodo = async (
+  id: number,
+  updates?: Partial<{ text: string; completed: boolean }>
+): Promise<Todo> => {
+  const response = updates
+    ? await axios.put(`${API_URL}/todos/${id}`, updates)
+    : await axios.patch(`${API_URL}/todos/${id}/toggle`);
   return response.data;
 };
 

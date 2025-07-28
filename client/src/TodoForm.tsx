@@ -1,25 +1,20 @@
 import { useState } from "react";
+import { createTodoThunk } from "./store/todoSlice";
+import { useAppDispatch } from "./store/store";
 
 export interface TodoFormProps {
   onCreate: (text: string) => Promise<void>;
 }
 
-const TodoForm: React.FC<TodoFormProps> = ({ onCreate }) => {
+const TodoForm = () => {
   const [inputValue, setInputValue] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputValue.trim()) return;
-
-    setIsLoading(true);
-    try {
-      await onCreate(inputValue);
+    if (inputValue.trim()) {
+      dispatch(createTodoThunk(inputValue));
       setInputValue("");
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -34,16 +29,10 @@ const TodoForm: React.FC<TodoFormProps> = ({ onCreate }) => {
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         placeholder="Текст задачи"
-        disabled={isLoading}
         className="todo-input"
       />
 
-      <button
-        type="submit"
-        disabled={!inputValue.trim() || isLoading}
-        className="add-button">
-        {isLoading ? "Добавляем задачу..." : "Добавить"}
-      </button>
+      <button type="submit" className="add-button"></button>
     </form>
   );
 };

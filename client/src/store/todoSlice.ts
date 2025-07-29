@@ -16,6 +16,7 @@ interface TodoState {
   items: Todo[];
   page: number;
   limit: number;
+  total: number;
   totalPages: number;
   isLoading: boolean;
   error: string | null;
@@ -25,6 +26,7 @@ const initialState: TodoState = {
   items: [],
   page: 1,
   limit: 10,
+  total: 0,
   totalPages: 1,
   isLoading: false,
   error: null,
@@ -39,37 +41,39 @@ export const fetchTodosThunk = createAsyncThunk(
 
 export const createTodoThunk = createAsyncThunk(
   "todos/createTodo",
-  async (text: string, { getState }) => {
-    const state = getState() as { todos: TodoState };
+  async (text: string) => {
     const newTodo = await createTodo(text);
-    return { todo: newTodo, page: state.todos.page, limit: state.todos.limit };
+    return newTodo;
   }
 );
 
 export const toggleTodoThunk = createAsyncThunk(
   "todos/toggleTodo",
-  async (id: number, { getState }) => {
-    const state = getState() as { todos: TodoState };
-    await updateTodo(id);
-    return { page: state.todos.page, limit: state.todos.limit };
+  async (id: number) => {
+    const updatedTodo = await updateTodo(id);
+    return updatedTodo;
   }
 );
 
 export const deleteTodoThunk = createAsyncThunk(
   "todos/deleteTodo",
-  async (id: number, { getState }) => {
-    const state = getState() as { todos: TodoState };
+  async (id: number, { dispatch, getState }) => {
     await deleteTodo(id);
-    return { page: state.todos.page, limit: state.todos.limit };
+    const { todos } = getState() as { todos: TodoState };
+    if (!todos) throw new Error("Todos state not found");
+    const { page, limit } = todos;
+
+    await dispatch(fetchTodosThunk({ page, limit }));
+
+    return id;
   }
 );
 
 export const updateTodoTextThunk = createAsyncThunk(
   "todos/updateText",
-  async ({ id, text }: { id: number; text: string }, { getState }) => {
-    await updateTodo(id, { text });
-    const state = getState() as { todos: TodoState };
-    return { page: state.todos.page, limit: state.todos.limit };
+  async ({ id, text }: { id: number; text: string }) => {
+    const updatedTodo = await updateTodo(id, { text });
+    return updatedTodo;
   }
 );
 
@@ -95,6 +99,7 @@ const todoSlice = createSlice({
         fetchTodosThunk.fulfilled,
         (state, action: PayloadAction<PaginatedTodos>) => {
           state.items = action.payload.data;
+          state.total = action.payload.total;
           state.totalPages = action.payload.totalPages;
           state.isLoading = false;
         }
@@ -104,16 +109,41 @@ const todoSlice = createSlice({
         state.error = action.error.message || "failed to fetch todos";
       })
       .addCase(createTodoThunk.fulfilled, (state, action) => {
-        state.page = action.payload.page;
-        state.limit = action.payload.limit;
+        state.items = [
+          action.payload,
+          ...state.items.slice(0, state.limit - 1),
+        ];
+        if (state.items.length >= state.limit) {
+          state.totalPages = Math.ceil((state.total + 1) / state.limit);
+        }
+        state.total += 1;
       })
       .addCase(toggleTodoThunk.fulfilled, (state, action) => {
-        state.page = action.payload.page;
-        state.limit = action.payload.limit;
+        const updatedTodo = action.payload; // Данные с сервера
+        const index = state.items.findIndex(
+          (todo) => todo.id === updatedTodo.id
+        );
+        if (index !== -1) {
+          state.items[index] = updatedTodo; // Точечное обновление
+        }
       })
       .addCase(deleteTodoThunk.fulfilled, (state, action) => {
-        state.page = action.payload.page;
-        state.limit = action.payload.limit;
+        state.items = state.items.filter((todo) => todo.id !== action.payload);
+        //fetchTodosThunk({page: state.page, limit: state.limit})
+        state.total -= 1;
+        state.totalPages = Math.ceil(state.total / state.limit);
+        if (state.items.length === 0 && state.page > 1) {
+          state.page -= 1;
+        }
+      })
+      .addCase(updateTodoTextThunk.fulfilled, (state, action) => {
+        const updatedTodo = action.payload; // Данные с сервера
+        const index = state.items.findIndex(
+          (todo) => todo.id === updatedTodo.id
+        );
+        if (index !== -1) {
+          state.items[index] = updatedTodo; // Точечное обновление
+        }
       });
   },
 });

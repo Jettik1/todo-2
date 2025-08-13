@@ -1,21 +1,7 @@
 import axios from "axios";
+import type { PaginatedTodos, Todo } from "@/api/types";
 
 const API_URL = "http://localhost:3001";
-
-export interface Todo {
-  id: number;
-  text: string;
-  completed: boolean;
-  createdAt: string;
-}
-
-export interface PaginatedTodos {
-  data: Todo[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
 
 export const fetchTodos = async (
   page: number = 1,

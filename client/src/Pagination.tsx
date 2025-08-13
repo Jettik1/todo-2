@@ -18,13 +18,7 @@ const Pagination: React.FC<PaginationProps> = ({
   const limits = [5, 10, 20];
 
   return (
-    <div
-      style={{
-        display: "flex",
-        gap: "16px",
-        alignItems: "center",
-        marginTop: "20px",
-      }}>
+    <div className="pagination">
       <div>
         <label>Задач на странице: </label>
         <select

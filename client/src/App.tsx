@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
-import TodoForm from "./TodoForm";
-import TodoItem from "./TodoItem";
-import Pagination from "./Pagination";
+import toDoListSVG from "@/assets/to-do-list-svgrepo-com.svg";
+import reactLogo from "@/assets/react.svg";
+import "@/App.css";
+import TodoForm from "@/TodoForm";
+import TodoItem from "@/TodoItem";
+import Pagination from "@/Pagination";
 import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "./store/store";
+import type { AppDispatch, RootState } from "@/store/store";
 import {
   deleteTodoThunk,
   fetchTodosThunk,
@@ -14,7 +14,7 @@ import {
   setPage,
   toggleTodoThunk,
   updateTodoTextThunk,
-} from "./store/todoSlice";
+} from "@/store/todoSlice";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -57,8 +57,8 @@ function App() {
   return (
     <>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
+        <a href="" target="_blank">
+          <img src={toDoListSVG} className="logo" alt="Vite logo" />
         </a>
         <a href="https://react.dev" target="_blank">
           <img src={reactLogo} className="logo react" alt="React logo" />

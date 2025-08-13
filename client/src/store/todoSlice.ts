@@ -3,24 +3,9 @@ import {
   createSlice,
   type PayloadAction,
 } from "@reduxjs/toolkit";
-import {
-  createTodo,
-  deleteTodo,
-  fetchTodos,
-  updateTodo,
-  type PaginatedTodos,
-  type Todo,
-} from "../api/todos";
-
-interface TodoState {
-  items: Todo[];
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-  isLoading: boolean;
-  error: string | null;
-}
+import { createTodo, deleteTodo, fetchTodos, updateTodo } from "@/api/todos";
+import type { PaginatedTodos } from "@/api/types";
+import type { TodoState } from "@/store/types";
 
 const initialState: TodoState = {
   items: [],
@@ -137,12 +122,12 @@ const todoSlice = createSlice({
         }
       })
       .addCase(updateTodoTextThunk.fulfilled, (state, action) => {
-        const updatedTodo = action.payload; // Данные с сервера
+        const updatedTodo = action.payload;
         const index = state.items.findIndex(
           (todo) => todo.id === updatedTodo.id
         );
         if (index !== -1) {
-          state.items[index] = updatedTodo; // Точечное обновление
+          state.items[index] = updatedTodo;
         }
       });
   },

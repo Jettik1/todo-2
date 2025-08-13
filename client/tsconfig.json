@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react-jsx", // Поддержка React
+    "moduleResolution": "node",
+    "baseUrl": "./",
+    "paths": {
+      // Алиасы (если нужны)
+      "@/*": ["src/*"]
+    },
+    "types": ["vite/client"], // Для импортов из Vite
+    "allowSyntheticDefaultImports": true, // Разрешает дефолтные импорты
+    "esModuleInterop": true
+  },
+  "include": ["src"]
+}

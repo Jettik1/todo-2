@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import toDoListSVG from "@/assets/to-do-list-svgrepo-com.svg";
-import reactLogo from "@/assets/react.svg";
 import "@/App.css";
 import TodoForm from "@/TodoForm";
 import TodoItem from "@/TodoItem";
@@ -59,9 +58,6 @@ function App() {
       <div>
         <a href="" target="_blank">
           <img src={toDoListSVG} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
       <h1>Тудушки</h1>

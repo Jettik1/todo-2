@@ -1,124 +1,147 @@
-# Todo API Server
+ # Todo Auth API Server (Блок 3)
 
-Простой JSON API сервер для управления задачами с пагинацией и файловой базой данных.
+ ## Установка
+ 1. Убедитесь, что установлен Node.js v14+
+ 2. Установите зависимости:
+ ```bash
+ npm install express cors jsonwebtoken bcryptjs
+ ```
+ 3. Запустите сервер:
+ ```bash
+ node server.js
+ ```
 
-## Установка
+ ## Базовый URL
+ `http:localhost:3001`
 
-0.  Зайдите в папку server
-1.  Убедитесь, что у вас установлен Node.js (версия 14 или выше)
-2.  Установите зависимости:
+ ## Аутентификация
 
-```bash
-npm install
-```
+ ### Регистрация
+ **POST** `/auth/register`
+ ```json
+ {
+   "email": "user@example.com",
+   "password": "securepassword",
+   "age": 25  // опционально
+ }
+ ```
+ Ответ:
+ ```json
+ {
+   "accessToken": "JWT_TOKEN",
+   "refreshToken": "REFRESH_TOKEN"
+ }
+ ```
 
-3.  Запустите сервер:
+ ### Логин
+ **POST** `/auth/login` (аналогичный формат запроса)
 
-```bash
-npm run start
-```
+ ### Обновление токенов
+ **POST** `/auth/refresh`
+ ```json
+ {
+   "refreshToken": "your_refresh_token"
+ }
+ ```
 
-## Базовый URL
+ ## Профиль
 
-`http://localhost:3001`
+ ### Получить данные
+ **GET** `/auth/me`  
+ **Требует:** `Authorization: Bearer ACCESS_TOKEN`  
+ Ответ:
+ ```json
+ {
+   "id": 1,
+   "email": "user@example.com",
+   "age": 25,
+   "createdAt": "2023-10-20T10:00:00.000Z"
+ }
+ ```
 
-## Формат ответа
+ ### Смена пароля
+ **POST** `/auth/change-password`  
+ **Требует:** `Authorization: Bearer ACCESS_TOKEN`  
+ Запрос:
+ ```json
+ {
+   "oldPassword": "current_password",
+   "newPassword": "new_secure_password"
+ }
+ ```
 
-Все успешные ответы возвращаются в формате:
+ ## Работа с задачами
+ Все эндпоинты требуют заголовок `Authorization`
 
-```json
-{
-  "data": [
-    {
-      "id": 1744559298538,
-      "text": "test",
-      "completed": false,
-      "createdAt": "2025-04-13T15:48:18.538Z"
-    }
-  ],
-  "total": 1,
-  "page": 1,
-  "limit": 10,
-  "totalPages": 1
-}
-```
+ ### Получить задачи
+ **GET** `/todos?page=1&limit=10`  
+ Ответ:
+ ```json
+ {
+   "data": [
+     {
+       "id": 1,
+       "text": "Купить молоко",
+       "completed": false,
+       "createdAt": "2023-10-20T10:00:00.000Z"
+     }
+   ],
+   "pagination": {
+     "total": 15,
+     "page": 1,
+     "limit": 10,
+     "totalPages": 2
+   }
+ }
+ ```
 
-## Эндпоинты
+ ### Создать задачу
+ **POST** `/todos`
+ ```json
+ {
+   "text": "Новая задача"
+ }
+ ```
 
-### Получить список задач (с пагинацией)
+ ### Обновить задачу
+ **PUT** `/todos/:id`
+ ```json
+ {
+   "text": "Обновленный текст",
+   "completed": true
+ }
+ ```
 
-**GET** `/todos`
+ ### Удалить задачу
+ **DELETE** `/todos/:id`
 
-Параметры:
+ ### Переключить статус
+ **PATCH** `/todos/:id/toggle`
 
-- `page` - номер страницы (по умолчанию 1)
-- `limit` - количество задач на странице (по умолчанию 10)
+ ## Хранение данных
+ - `users.json` - email, хеш пароля, возраст, дата регистрации
+ - `todos.json` - задачи с привязкой к пользователю
+ - `refresh-tokens.json` - список активных refresh-токенов
 
-Пример ответа:
+ ## Пример запроса
+ ```javascript
+  Логин
+ const { accessToken } = await fetch('/auth/login', {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json' },
+   body: JSON.stringify({ 
+     email: 'user@example.com',
+     password: 'password' 
+   })
+ }).then(res => res.json());
 
-```json
-{
-  "data": [
-    {
-      "id": 1,
-      "text": "Купить молоко",
-      "completed": false,
-      "createdAt": "2023-10-20T10:00:00.000Z"
-    }
-  ],
-
-  "total": 15,
-  "page": 1,
-  "limit": 10,
-  "totalPages": 2
-}
-```
-
-### Создать новую задачу
-
-**POST** `/todos`
-
-Тело запроса:
-
-```json
-{
-  "text": "Новая задача"
-}
-```
-
-Пример ответа:
-
-```json
-{
-  "id": 2,
-  "text": "Новая задача",
-  "completed": false,
-  "createdAt": "2023-10-20T11:00:00.000Z"
-}
-```
-
-### Обновить задачу
-
-**PUT** `/todos/:id`
-
-Тело запроса (можно обновлять текст и/или статус):
-
-```json
-{
-  "text": "Обновленный текст",
-  "completed": true
-}
-```
-
-### Удалить задачу
-
-**DELETE** `/todos/:id`
-
-Возвращает HTTP 204 при успешном удалении.
-
-### Переключить статус задачи
-
-**PATCH** `/todos/:id/toggle`
-
-Автоматически меняет статус completed на противоположный.
-
+  Создание задачи
+ await fetch('/todos', {
+   method: 'POST',
+   headers: {
+     'Content-Type': 'application/json',
+     'Authorization': `Bearer ${accessToken}`
+   },
+   body: JSON.stringify({ text: 'Новая задача' })
+ });
+ ```

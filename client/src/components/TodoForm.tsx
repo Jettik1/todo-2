@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { createTodoThunk } from "./store/todoSlice";
-import { useAppDispatch } from "./store/store";
+import { createTodoThunk } from "@/store/todoSlice";
+import { useAppDispatch } from "@/store/store";
 
 export interface TodoFormProps {
   onCreate: (text: string) => Promise<void>;

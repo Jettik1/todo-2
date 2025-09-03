@@ -15,3 +15,143 @@
   align-items: "center";
   margin-top: "20px";
 }
+
+.auth-page {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.register-form,
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.register-form input,
+.login-form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.register-form button,
+.login-form button {
+  padding: 10px;
+  background: #646cff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.error {
+  color: #ff4444;
+  padding: 10px;
+  background: #ffebee;
+  border-radius: 4px;
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.profile-page {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.user-info {
+  background: gray;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+.user-info p {
+  margin: 8px 0;
+}
+
+.change-password {
+  background: gray;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.change-password input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.change-password .error {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.success {
+  color: #4caf50;
+  padding: 10px;
+  background: gray;
+  border-radius: 4px;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #52323243;
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 2rem;
+}
+
+.nav-brand a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #646cff;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  color: #495057;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.nav-links a:hover {
+  background-color: #e9ecef;
+}
+
+.user-email {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.logout-btn {
+  padding: 0.5rem 1rem;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #c82333;
+}

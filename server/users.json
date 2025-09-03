@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1756222231885,
+    "email": "contrakt120@gmail.com",
+    "password": "$2a$10$tFJyV1Odn/yUEO8D.hd0/.N.MZaF3jt1XYfhjlOqJX57cps9t7FUO",
+    "age": 23,
+    "createdAt": "2025-08-26T15:30:31.885Z"
+  },
+  {
+    "id": 1756469225284,
+    "email": "contrakt121@gmail.com",
+    "password": "$2a$10$Isy3lCH902k3/cS33oG/IORFwMzCnJhw2yzBMDFIYPnstIHtKKp06",
+    "age": 29,
+    "createdAt": "2025-08-29T12:07:05.284Z"
+  }
+]

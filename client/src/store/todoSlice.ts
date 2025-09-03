@@ -3,7 +3,7 @@ import {
   createSlice,
   type PayloadAction,
 } from "@reduxjs/toolkit";
-import { createTodo, deleteTodo, fetchTodos, updateTodo } from "@/api/todos";
+import { createTodo, deleteTodo, fetchTodos, updateTodo } from "@/api/todosAPI";
 import type { PaginatedTodos } from "@/api/types";
 import type { TodoState } from "@/store/types";
 
